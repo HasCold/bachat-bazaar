@@ -16,7 +16,7 @@ const priceHistorySchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, required: true },
     description: { type: String, required: true },
     shortDescription: { type: String },
     price: { type: Number, required: true },
@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema(
     discount: { type: Number, default: 0 }, // percentage
     category: { type: String, required: true },
     brand: { type: String, default: 'Generic' },
+    platform: { type: String, required: true }, 
     images: [{ type: String }], // Array of image URLs (2-3)
     thumbnail: { type: String }, // Main image for list view
     stock: { type: Number, default: 0 },
@@ -39,6 +40,9 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// compound unique index
+productSchema.index({ slug: 1, platform: 1}, {unique: true});
 
 productSchema.index({ name: 'text', description: 'text', category: 'text' });
 
