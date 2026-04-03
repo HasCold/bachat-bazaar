@@ -1,4 +1,5 @@
-const Product = require('../models/Product');
+const Product = require('../../models/Product');
+const { BACHAT_BAZAAR } = require('../../shared/constants');
 
 // GET /api/products — paginated list
 exports.getProducts = async (req, res) => {
@@ -10,7 +11,9 @@ exports.getProducts = async (req, res) => {
     const { category, search, sort, minPrice, maxPrice } = req.query;
 
     // Build filter
-    const filter = {};
+    const filter = {
+      platform: {$eq: BACHAT_BAZAAR}
+    };
     if (category && category !== 'all') filter.category = category;
     if (search) filter.$text = { $search: search };
     if (minPrice || maxPrice) {
@@ -55,7 +58,10 @@ exports.getProducts = async (req, res) => {
 // GET /api/products/featured
 exports.getFeaturedProducts = async (req, res) => {
   try {
-    const products = await Product.find({ featured: true })
+    const products = await Product.find({ 
+      platform: BACHAT_BAZAAR, 
+      featured: true 
+    })
       .select('name slug thumbnail price originalPrice discount category brand rating reviewCount badge')
       .limit(8);
     res.json({ success: true, data: products });
@@ -67,7 +73,10 @@ exports.getFeaturedProducts = async (req, res) => {
 // GET /api/products/:slug
 exports.getProductBySlug = async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug });
+    const product = await Product.findOne({ 
+      platform: BACHAT_BAZAAR, 
+      slug: req.params.slug 
+    });
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -80,10 +89,14 @@ exports.getProductBySlug = async (req, res) => {
 // GET /api/products/:slug/related
 exports.getRelatedProducts = async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug }).select('category');
+    const product = await Product.findOne({ 
+      platform: BACHAT_BAZAAR, 
+      slug: req.params.slug 
+    }).select('category');
     if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
 
     const related = await Product.find({
+      platform: BACHAT_BAZAAR, 
       category: product.category,
       slug: { $ne: req.params.slug }
     })
@@ -99,7 +112,7 @@ exports.getRelatedProducts = async (req, res) => {
 // GET /api/products/categories
 exports.getCategories = async (req, res) => {
   try {
-    const categories = await Product.distinct('category');
+    const categories = await Product.distinct('category', {platform: BACHAT_BAZAAR});
     res.json({ success: true, data: categories });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

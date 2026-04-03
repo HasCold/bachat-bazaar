@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const productRoutes = require('./routes/productRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
+const { V1_PATH } = require('./shared/constants');
+const mainRoutes = require("./routes/index");
 
 const app = express();
 
@@ -19,9 +19,8 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
+// Bachat Bazaar Routes
+app.use(V1_PATH, mainRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

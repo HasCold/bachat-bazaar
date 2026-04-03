@@ -5,10 +5,16 @@ const api = axios.create({
   timeout: 10000,
 })
 
-export const getProducts = (params) => api.get('/products', { params })
-export const getFeaturedProducts = () => api.get('/products/featured')
-export const getProductBySlug = (slug) => api.get(`/products/${slug}`)
-export const getRelatedProducts = (slug) => api.get(`/products/${slug}/related`)
-export const getCategories = () => api.get('/categories')
+const BACHAT_BAZAAR = "/bachat-bazaar";
+const PRODCUT_ROUTES = BACHAT_BAZAAR + "/products";
+const GET_PRODUCTS = PRODCUT_ROUTES + '/';
+const GET_PRODUCTS_FEATURE = PRODCUT_ROUTES + '/featured';
+const GET_PRODUCTS_CATEGORIES = PRODCUT_ROUTES + '/categories';
+
+export const getProducts = (params) => api.get(GET_PRODUCTS, { params })
+export const getFeaturedProducts = () => api.get(GET_PRODUCTS_FEATURE)
+export const getProductBySlug = (slug) => api.get(`${PRODCUT_ROUTES}/${slug}`)
+export const getRelatedProducts = (slug) => api.get(`${PRODCUT_ROUTES}/${slug}/related`)
+export const getCategories = () => api.get(GET_PRODUCTS_CATEGORIES)
 
 export default api

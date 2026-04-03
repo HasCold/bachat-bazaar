@@ -1,11 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const Product = require('../models/Product');
+const Product = require('../../models/Product');
+const { BACHAT_BAZAAR } = require('../../shared/constants');
 
-// GET /api/categories - all categories with counts
-router.get('/', async (req, res) => {
+const getAllCategory = async (req, res) => {
   try {
     const cats = await Product.aggregate([
+      { $match: { platform: BACHAT_BAZAAR } },
       { $group: { _id: '$category', count: { $sum: 1 } } },
       { $sort: { count: -1 } }
     ]);
@@ -13,6 +12,6 @@ router.get('/', async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
-});
+};
 
-module.exports = router;
+module.exports = { getAllCategory };
