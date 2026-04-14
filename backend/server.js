@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const { V1_PATH } = require('./shared/constants');
 const mainRoutes = require("./routes/index");
+const { logger } = require("./src/utils/logger");
 
 const app = express();
 
@@ -40,10 +41,30 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bachat
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    console.log('✅ MongoDB connected');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    logger.info("mongo.connected");
+
+    const server = app.listen(PORT, () => {
+      logger.info("server.listening", { url: `http://localhost:${PORT}` });
     });
+
+    const shutdown = async (signal) => {
+      try {
+        logger.info("shutdown.signal", { signal });
+        await mongoose.connection.close();
+        server.close(() => {
+          logger.info("server.closed");
+          process.exit(0);
+        });
+        // Force-exit safety net
+        setTimeout(() => process.exit(0), 5000).unref();
+      } catch (e) {
+        logger.error("shutdown.error", { err: e?.message, stack: e?.stack });
+        process.exit(1);
+      }
+    };
+
+    process.on("SIGINT", () => shutdown("SIGINT"));
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
