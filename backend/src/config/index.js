@@ -34,6 +34,13 @@ const config = {
   log: {
     level: process.env.LOG_LEVEL || "info",
   },
+  prediction: {
+    windowSize: toInt(process.env.PRED_WINDOW_SIZE, 4),
+    steps: toInt(process.env.PRED_STEPS, 3),
+    epochs: toInt(process.env.PRED_EPOCHS, 60),
+    movingAvgWindow: toInt(process.env.PRED_FALLBACK_MOVING_AVG_WINDOW, 3),
+    cacheTtlSeconds: toInt(process.env.PRED_CACHE_TTL_SECONDS, 24 * 60 * 60),
+  },
 };
 
 module.exports = { config };

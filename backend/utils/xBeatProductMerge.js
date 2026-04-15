@@ -19,6 +19,7 @@ function mergeProductGroup(group) {
     const p = { ...group[0] };
     p.availability = [
       {
+        product_id: String(p._id),
         platform: p.platform,
         slug: p.slug,
         price: p.price,
@@ -39,6 +40,7 @@ function mergeProductGroup(group) {
 
   const primary = sorted[0];
   const availability = sorted.map((p) => ({
+    product_id: String(p._id),
     platform: p.platform,
     slug: p.slug,
     price: p.price,

@@ -117,6 +117,7 @@ exports.getProductByPlatformSlug = async (req, res) => {
       .lean();
 
     const selfEntry = {
+      product_id: String(product._id),
       platform: product.platform,
       slug: product.slug,
       price: product.price,
@@ -125,6 +126,7 @@ exports.getProductByPlatformSlug = async (req, res) => {
     };
 
     const siblingEntries = siblings.map((o) => ({
+      product_id: String(o._id),
       platform: o.platform,
       slug: o.slug,
       price: o.price,
