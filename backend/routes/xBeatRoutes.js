@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { requireAuth } = require('../middleware/requireAuth');
 const {
   getProducts,
   getMeta,
@@ -7,6 +8,8 @@ const {
   getRelatedProducts,
 } = require('../controllers/xBeat/productController');
 const { predictPrice } = require('../controllers/xBeat/predictController');
+
+router.use(requireAuth);
 
 router.get('/meta', getMeta);
 router.get('/products', getProducts);
