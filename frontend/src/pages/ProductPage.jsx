@@ -610,11 +610,11 @@ export default function ProductPage() {
       </div>
 
       {/* ── Price History Chart ── */}
-      {product.priceHistory?.length > 0 && (
+      {/* {product.priceHistory?.length > 0 && (
         <div className="mb-14">
           <PriceHistoryChart priceHistory={product.priceHistory} currentPrice={product.price} />
         </div>
-      )}
+      )} */}
 
       {/* ── Related Products ── */}
       {related.length > 0 && (
